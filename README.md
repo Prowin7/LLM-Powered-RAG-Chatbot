@@ -1,6 +1,6 @@
-# RAG - ChatBot: Retrieval Augmented Generation (RAG) chatbot using OPENAI's Gemini-Pro model, Langchain, ChromaDB, and Streamlit
+# RAG - ChatBot: Retrieval Augmented Generation (RAG) chatbot using OPENAI's GPT model, Langchain, ChromaDB/FAISS, and Streamlit
 
-This RAG-ChatBot is a Python application that allows the user to chat with multiple PDF documents. You ask questions in natural language, in the same way as if you were to ask a human, and the application will provide relevant responses based on the content of the uploaded documents. This app uses OPENAI's Gemini-Pro model to generate accurate answers to your questions, but the model will only answer questions that are about the uploaded documents.
+This RAG-ChatBot is a Python application that allows the user to chat with multiple PDF documents. You ask questions in natural language, in the same way as if you were to ask a human, and the application will provide relevant responses based on the content of the uploaded documents. This app uses OPENAI's gpt-Pro model to generate accurate answers to your questions, but the model will only answer questions that are about the uploaded documents.
 Here are some key points about the project:
 - Upload Documents: When the app is launched, you can upload a PDF document and chat with the document on the fly, no need to reload the app
 - Offline Documents: If you need to leave the app, when you come back, you won't need to upload the same document again, you can chat with it as soon as the app starts. Also, you can keep uploading documents to chat with all of them at the same time
