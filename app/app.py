@@ -1,69 +1,96 @@
-import streamlit as st
 import os
-from utils.save_docs import save_docs_to_vectordb
-from utils.session_state import initialize_session_state_variables
-from utils.prepare_vectordb import get_vectorstore
-from utils.chatbot import chat
+import streamlit as st
+from dotenv import load_dotenv
+from PyPDF2 import PdfReader
 
-class ChatApp:
-    """
-    A Streamlit application for chatting with PDF documents
+# --- LangChain Core Imports ---
+from langchain.text_splitter import CharacterTextSplitter
+from langchain_openai import OpenAIEmbeddings, ChatOpenAI
+from langchain_community.vectorstores import FAISS
+from langchain.memory import ConversationBufferMemory
+from langchain.chains import ConversationalRetrievalChain
 
-    This class encapsulates the functionality for uploading PDF documents, processing them,
-    and enabling users to chat with the documents using a chatbot. It handles the initialization
-    of Streamlit configurations and session state variables, as well as the frontend for document
-    upload and chat interaction
-    """
-    def __init__(self):
-        """
-        Initializes the ChatApp class
+def main():
+    """Run the main Streamlit application."""
+    load_dotenv()
+    st.set_page_config(page_title="Chat with your PDFs", page_icon="📚")
 
-        This method ensures the existence of the 'docs' folder, sets Streamlit page configurations,
-        and initializes session state variables
-        """
-        # Ensure the docs folder exists
-        if not os.path.exists("docs"):
-            os.makedirs("docs")
+    # --- Session State Setup ---
+    # This is like the app's short-term memory
+    if "conversation" not in st.session_state:
+        st.session_state.conversation = None
+    if "chat_history" not in st.session_state:
+        st.session_state.chat_history = []
 
-        # Configurations and session state initialization
-        st.set_page_config(page_title="Chat with PDFS :books:")
-        st.title("Chat with PDFS :books:")
-        initialize_session_state_variables(st)
-        self.docs_files = st.session_state.processed_documents
+    # --- UI Header ---
+    st.header("📚 Chat with your PDFs")
+    st.write("Upload your documents and ask questions!")
 
-    def run(self):
-        """
-        Runs the Streamlit app for chatting with PDFs
+    # --- Sidebar for File Uploads ---
+    with st.sidebar:
+        st.subheader("Your Documents")
+        pdf_files = st.file_uploader(
+            "Upload your PDFs and click 'Process'",
+            accept_multiple_files=True,
+            type="pdf"
+        )
 
-        This method handles the frontend for document upload, unlocks the chat when documents are uploaded,
-        and locks the chat until documents are uploaded
-        """
-        upload_docs = os.listdir("docs")
-        # Sidebar frontend for document upload
-        with st.sidebar:
-            st.subheader("Your documents")
-            if upload_docs:
-                st.write("Uploaded Documents:")
-                st.text(", ".join(upload_docs))
+        if st.button("Process"):
+            if not pdf_files:
+                st.warning("⚠️ Please upload at least one PDF.")
             else:
-                st.info("No documents uploaded yet.")
-            st.subheader("Upload PDF documents")
-            pdf_docs = st.file_uploader("Select a PDF document and click on 'Process'", type=['pdf'], accept_multiple_files=True)
-            if pdf_docs:
-                save_docs_to_vectordb(pdf_docs, upload_docs)
+                with st.spinner("🔄 Reading and preparing your documents..."):
+                    
+                    # --- Step 1: Read all PDFs into one big text string ---
+                    raw_text = ""
+                    for pdf in pdf_files:
+                        pdf_reader = PdfReader(pdf)
+                        for page in pdf_reader.pages:
+                            raw_text += page.extract_text() or ""
+                    
+                    # --- Step 2: Split the text into smaller chunks ---
+                    text_splitter = CharacterTextSplitter(
+                        separator="\n",
+                        chunk_size=1000,
+                        chunk_overlap=200,
+                        length_function=len
+                    )
+                    text_chunks = text_splitter.split_text(raw_text)
 
-        # Unlocks the chat when document is uploaded
-        if self.docs_files or st.session_state.uploaded_pdfs:
-            # Check to see if a new document was uploaded to update the vectordb variable in the session state
-            if len(upload_docs) > st.session_state.previous_upload_docs_length:
-                st.session_state.vectordb = get_vectorstore(upload_docs, from_session_state=True)
-                st.session_state.previous_upload_docs_length = len(upload_docs)
-            st.session_state.chat_history = chat(st.session_state.chat_history, st.session_state.vectordb)
+                    # --- Step 3: Create the knowledge base (Vector Store) ---
+                    embeddings = OpenAIEmbeddings()
+                    vectorstore = FAISS.from_texts(texts=text_chunks, embedding=embeddings)
 
-        # Locks the chat until a document is uploaded
-        if not self.docs_files and not st.session_state.uploaded_pdfs:
-            st.info("Upload a pdf file to chat with it. You can keep uploading files to chat with, and if you need to leave, you won't need to upload these files again")
+                    # --- Step 4: Create the conversation "brain" ---
+                    llm = ChatOpenAI(model_name="gpt-4o-mini", temperature=0.1)
+                    memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
+                    st.session_state.conversation = ConversationalRetrievalChain.from_llm(
+                        llm=llm,
+                        retriever=vectorstore.as_retriever(),
+                        memory=memory
+                    )
+                    
+                    st.success("✅ Documents are ready! You can now ask questions.")
+
+    # --- Main Chat Interface ---
+    if st.session_state.conversation:
+        user_question = st.text_input("💬 Ask a question about your documents:")
+        if user_question:
+            # Get the bot's response
+            response = st.session_state.conversation({"question": user_question})
+            st.session_state.chat_history = response["chat_history"]
+
+    # --- Display Chat History ---
+    if st.session_state.chat_history:
+        st.write("---")
+        for i, message in enumerate(st.session_state.chat_history):
+            # If the index is even, it's a user message
+            if i % 2 == 0:
+                st.write(f"**🧑 You:** {message.content}")
+            # If the index is odd, it's a bot message
+            else:
+                st.write(f"**🤖 Bot:** {message.content}")
 
 if __name__ == "__main__":
-    app = ChatApp()
-    app.run()
+    main()
+
