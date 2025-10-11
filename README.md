@@ -1,6 +1,6 @@
-# RAG - ChatBot: Retrieval Augmented Generation (RAG) chatbot using Google's Gemini-Pro model, Langchain, ChromaDB, and Streamlit
+# RAG - ChatBot: Retrieval Augmented Generation (RAG) chatbot using OPENAI's Gemini-Pro model, Langchain, ChromaDB, and Streamlit
 
-This RAG-ChatBot is a Python application that allows the user to chat with multiple PDF documents. You ask questions in natural language, in the same way as if you were to ask a human, and the application will provide relevant responses based on the content of the uploaded documents. This app uses Google's Gemini-Pro model to generate accurate answers to your questions, but the model will only answer questions that are about the uploaded documents.
+This RAG-ChatBot is a Python application that allows the user to chat with multiple PDF documents. You ask questions in natural language, in the same way as if you were to ask a human, and the application will provide relevant responses based on the content of the uploaded documents. This app uses OPENAI's Gemini-Pro model to generate accurate answers to your questions, but the model will only answer questions that are about the uploaded documents.
 Here are some key points about the project:
 - Upload Documents: When the app is launched, you can upload a PDF document and chat with the document on the fly, no need to reload the app
 - Offline Documents: If you need to leave the app, when you come back, you won't need to upload the same document again, you can chat with it as soon as the app starts. Also, you can keep uploading documents to chat with all of them at the same time
@@ -31,17 +31,17 @@ The main functionality of the app is the loop on the right side of the image. Th
 When the app gets initialized and there's already processed documents, steps 1-3 are skipped, and the user can automatically chat with these already processed PDFs. The option to upload a PDF is always available, so when the user does upload a new file, the app does steps 1-3 while a "processing" message appears in the sidebar, and the vector database gets updated with the new document. This way, there's no need for a "manual" mode, where the user can only upload a new file, making the usage of the app easier. 
 
 ## App Usage
-To install and use the app, an API key from Google will be needed. For this, you can click [here](https://aistudio.google.com/app/apikey). Accept the terms, and if the option to create an API key is not selectable, just reload the page. Click on "Create API Key" and then click on "Create API key in new project" and copy the key. It's recommended to paste the key into a new txt file or something, so you have easy access.
+To install and use the app, an API key from OPENAI will be needed. For this, you can click [here](https://aistudio.OPENAI.com/app/apikey). Accept the terms, and if the option to create an API key is not selectable, just reload the page. Click on "Create API Key" and then click on "Create API key in new project" and copy the key. It's recommended to paste the key into a new txt file or something, so you have easy access.
 Also, to use the app, it's assumed that you have python installed
 
 ### Step 1: Create .env file
 Copy this repo or download the files as a zip and extract it. Navigate to the folder where the files README and requirements are located. You will see the app folder too. Create a new txt file and paste this: 
 
 ```shell
-GOOGLE_API_KEY = "apikey"
+OPENAI_API_KEY = "apikey"
 ```
 
-Now, paste the API key that you generated into the quotation marks. It should look something like this: GOOGLE_API_KEY = "AIzaSyCJOZtTkyN9rfuXEjTtngeubYTUne"
+Now, paste the API key that you generated into the quotation marks. It should look something like this: OPENAI_API_KEY = "AIzaSyCJOZtTkyN9rfuXEjTtngeubYTUne"
 
 Save the file as an environment file, with .env as the name. To do this, when saving the file, click on Type and choose "Unknown(*.). Make sure that the name of the file is .env
 
