@@ -5,13 +5,14 @@ from PyPDF2 import PdfReader
 
 # --- LangChain Core Imports ---
 from langchain.text_splitter import CharacterTextSplitter
-from langchain_openai import OpenAIEmbeddings, ChatOpenAI
-from langchain_community.vectorstores import Chroma  # Changed from FAISS
+from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_community.vectorstores import FAISS
 from langchain.memory import ConversationBufferMemory
 from langchain.chains import ConversationalRetrievalChain
+from langchain_community.chat_models import ChatHuggingFace
 
-# Define the path for the persistent ChromaDB
-CHROMA_DB_PATH = "./chroma_db"
+# Define FAISS index file path
+FAISS_DB_PATH = "./faiss_index"
 
 def main():
     """Run the main Streamlit application."""
@@ -28,22 +29,27 @@ def main():
     st.header("📚 Chat with your PDFs")
     st.write("Upload your documents, process them, and start chatting!")
 
-    # --- Load Existing DB On Startup ---
-    # Smartly load the conversation chain if the DB already exists
-    if os.path.exists(CHROMA_DB_PATH) and st.session_state.conversation is None:
-        with st.spinner("🔄 Loading existing knowledge base..."):
-            embeddings = OpenAIEmbeddings()
-            vectorstore = Chroma(persist_directory=CHROMA_DB_PATH, embedding_function=embeddings)
+    # --- Load Hugging Face API Key ---
+    hf_api_key = os.getenv("HUGGINGFACEHUB_API_TOKEN")
+    if not hf_api_key:
+        st.error("❌ Please set your Hugging Face Hub API key in the .env file as HUGGINGFACEHUB_API_TOKEN")
+        st.stop()
+
+    # --- Load Existing FAISS DB On Startup ---
+    if os.path.exists(FAISS_DB_PATH) and st.session_state.conversation is None:
+        with st.spinner("🔄 Loading existing FAISS knowledge base..."):
+            embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
+            vectorstore = FAISS.load_local(FAISS_DB_PATH, embeddings, allow_dangerous_deserialization=True)
             
-            llm = ChatOpenAI(model_name="gpt-4o-mini", temperature=0.1)
+            llm = ChatHuggingFace(repo_id="HuggingFaceH4/zephyr-7b-beta", huggingfacehub_api_token=hf_api_key)
             memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
+            
             st.session_state.conversation = ConversationalRetrievalChain.from_llm(
                 llm=llm,
                 retriever=vectorstore.as_retriever(),
                 memory=memory
             )
-            st.sidebar.success("✅ Knowledge base loaded from disk!", icon="💽")
-
+            st.sidebar.success("✅ Knowledge base loaded from FAISS!", icon="💽")
 
     # --- Sidebar for File Uploads ---
     with st.sidebar:
@@ -73,16 +79,13 @@ def main():
                     )
                     text_chunks = text_splitter.split_text(raw_text)
 
-                    # Step 3: Create ChromaDB vector store and persist it
-                    embeddings = OpenAIEmbeddings()
-                    vectorstore = Chroma.from_texts(
-                        texts=text_chunks, 
-                        embedding=embeddings,
-                        persist_directory=CHROMA_DB_PATH  # This saves the DB
-                    )
+                    # Step 3: Create FAISS vector store and save
+                    embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
+                    vectorstore = FAISS.from_texts(text_chunks, embedding=embeddings)
+                    vectorstore.save_local(FAISS_DB_PATH)
 
                     # Step 4: Create conversation chain
-                    llm = ChatOpenAI(model_name="gpt-4o-mini", temperature=0.1)
+                    llm = ChatHuggingFace(repo_id="HuggingFaceH4/zephyr-7b-beta", huggingfacehub_api_token=hf_api_key)
                     memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
                     st.session_state.conversation = ConversationalRetrievalChain.from_llm(
                         llm=llm,
@@ -90,7 +93,7 @@ def main():
                         memory=memory
                     )
                     
-                    st.success("✅ Documents processed and saved!")
+                    st.success("✅ Documents processed and saved to FAISS!")
 
     # --- Main Chat Interface ---
     if st.session_state.conversation:
@@ -110,4 +113,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
