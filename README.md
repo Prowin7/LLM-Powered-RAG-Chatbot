@@ -38,7 +38,7 @@ Also, to use the app, it's assumed that you have python installed
 Copy this repo or download the files as a zip and extract it. Navigate to the folder where the files README and requirements are located. You will see the app folder too. Create a new txt file and paste this: 
 
 ```shell
-OPENAI_API_KEY = "apikey"
+HUGGINGFACEHUB_API_TOKEN = "paste your token here"
 ```
 
 Now, paste the API key that you generated into the quotation marks. It should look something like this: OPENAI_API_KEY = "AIzaSyCJOZtTkyN9rfuXEjTtngeubYTUne"
