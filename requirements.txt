@@ -1,7 +1,8 @@
+langchain==0.2.*
+langchain-community
+langchain-text-splitters
+faiss-cpu
 streamlit
 python-dotenv
-PyPDF2
-langchain
-langchain-openai
-chromadb
-tiktoken
+pypdf
+sentence-transformers
