@@ -1,4 +1,4 @@
-# RAG - ChatBot: Retrieval Augmented Generation (RAG) chatbot using HuggingFace's Zephyr-7B-Beta, LangChain, FAISS, and Streamlit
+# RAG - ChatBot: Retrieval Augmented Generation (RAG) chatbot using HuggingFace Transform, LangChain, FAISS, and Streamlit
 
 This RAG-ChatBot is a Python application that allows users to chat with PDF documents. It uses HuggingFace's Zephyr-7B-Beta model to generate accurate answers based on the content of uploaded PDFs, with responses grounded in the document content.
 
