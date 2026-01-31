@@ -1,4 +1,4 @@
-# 🔍 LLM-Powered RAG Chatbot
+# 🔍 LLM-Powered RAG Chatbot - live link (https://llm-powered-rag-chatbot-75wktnktuj3elwhbtypwqz.streamlit.app/)
 
 A modern, Streamlit-based Retrieval-Augmented Generation (RAG) chatbot that lets you upload documents and chat with them using AI.
 
@@ -20,3 +20,4 @@ A modern, Streamlit-based Retrieval-Augmented Generation (RAG) chatbot that lets
 ```bash
 git clone [https://github.com/Prowin7/LLM-Powered-RAG-Chatbot.git](https://github.com/Prowin7/LLM-Powered-RAG-Chatbot.git)
 cd LLM-Powered-RAG-Chatbot
+
