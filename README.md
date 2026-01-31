@@ -1,23 +1,31 @@
-# 🔍 LLM-Powered RAG Chatbot - live link (https://llm-powered-rag-chatbot-75wktnktuj3elwhbtypwqz.streamlit.app/)
+# 🔍 LLM-Powered RAG Chatbot
 
-A modern, Streamlit-based Retrieval-Augmented Generation (RAG) chatbot that lets you upload documents and chat with them using AI.
+🚀 **Live Demo:**  
+👉 https://llm-powered-rag-chatbot-75wktnktuj3elwhbtypwqz.streamlit.app/
 
-![Python](https://img.shields.io/badge/Python-3.11+-blue.svg)
-![Streamlit](https://img.shields.io/badge/Streamlit-1.40+-red.svg)
-![License](https://img.shields.io/badge/License-MIT-green.svg)
+A modern **Retrieval-Augmented Generation (RAG) chatbot** built using **Streamlit**, **FAISS**, and **Groq-powered LLaMA 3.3 (70B)**.  
+Upload your documents and chat with them using accurate, context-aware AI responses.
+
+---
 
 ## ✨ Features
 
-- **📁 Multi-Format Document Upload** - Support for PDF, TXT, CSV, DOCX, XLSX, JSON
-- **🧠 Intelligent Search** - FAISS vector store for fast semantic search
-- **💬 Chat Interface** - Modern chat UI with message history
-- **🤖 Groq LLM Integration** - Powered by Llama 3.3 70B for accurate responses
-- **⚡ Fast Processing** - Efficient document chunking and embedding
+- 📁 **Multi-Format Document Upload**  
+  Supports **PDF, TXT, CSV, DOCX, XLSX, JSON**
 
-## 🚀 Quick Start
+- 🧠 **Semantic Search**  
+  FAISS vector database for fast similarity search
 
-### 1. Clone the repository
-```bash
-git clone [https://github.com/Prowin7/LLM-Powered-RAG-Chatbot.git](https://github.com/Prowin7/LLM-Powered-RAG-Chatbot.git)
-cd LLM-Powered-RAG-Chatbot
+- 💬 **Interactive Chat Interface**  
+  Clean Streamlit UI with conversation history
+
+- 🤖 **Groq LLM Integration**  
+  Powered by **LLaMA 3.3 70B** for high-quality answers
+
+- ⚡ **Efficient RAG Pipeline**  
+  Optimized chunking, embedding, and retrieval
+
+---
+
+## 🏗️ Architecture
 
