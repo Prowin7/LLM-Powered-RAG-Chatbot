@@ -643,8 +643,8 @@ SOFTWARE.
 **Developer**: Praveen Nukilla 
 📧 **Email**:nukillapraveen@gmail.com  
 🔗 **LinkedIn**: (https://www.linkedin.com/in/praveen-nukilla-753a2a334/)
-🐙 **GitHub**: [@yourusername](https://github.com/Prowin7)  
-🌐 **Website**: [yourwebsite.com](https://portfolio-coral-nine-77.vercel.app/)
+🐙 **GitHub**: [@Prowin7](https://github.com/Prowin7)  
+🌐 **Website**: (https://portfolio-coral-nine-77.vercel.app/)
 
 ---
 
@@ -673,3 +673,4 @@ If you find this project helpful, please consider:
 **[⬆ Back to Top](#-llm-powered-rag-chatbot)**
 
 </div>
+
